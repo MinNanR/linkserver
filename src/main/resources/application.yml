@@ -1,0 +1,30 @@
+spring:
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+
+  datasource:
+    url: jdbc:mysql://minnan.site:3306/link_manager?serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  thymeleaf:
+    cache: false
+    mode: HTML5
+
+  redis:
+    host: minnan.site
+    port: 6379
+    database: 5
+
+
+server:
+  port: 8989
+
+jwt:
+  route:
+    authentication:
+      path: /auth
+  header: Authorization
+  expiration: 604800
+  scret: min107
