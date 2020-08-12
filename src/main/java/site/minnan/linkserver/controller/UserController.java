@@ -3,7 +3,6 @@ package site.minnan.linkserver.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -11,19 +10,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import site.minnan.linkserver.entites.SignupDO;
-import site.minnan.linkserver.entites.UserInformation;
+import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.entites.jwt.JwtRequest;
 import site.minnan.linkserver.entites.jwt.JwtResponse;
 import site.minnan.linkserver.entites.jwt.JwtUser;
-import site.minnan.linkserver.exception.CodeNotValidatedException;
-import site.minnan.linkserver.exception.UserExistException;
 import site.minnan.linkserver.service.UserService;
 import site.minnan.linkserver.utils.JwtUtil;
+import site.minnan.linkserver.utils.ResponseCode;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
 
 @Controller
 @Slf4j
@@ -49,7 +44,7 @@ public class UserController {
 
     @PostMapping("${jwt.route.authentication.path}")
     @ResponseBody
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         log.info(authenticationRequest.toString());
         try {
             manager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
@@ -60,12 +55,13 @@ public class UserController {
         } catch (BadCredentialsException e) {
             e.printStackTrace();
             throw new Exception("INVALID_CREDENTIALS", e);
-        } catch (Exception e){
-            e.printStackTrace();
         }
         UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
         String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        ResponseEntity<JwtResponse> responseResponseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS,
+                "登陆成功");
+        responseResponseEntity.setData(new JwtResponse(token));
+        return responseResponseEntity;
     }
 
     @GetMapping("/token")

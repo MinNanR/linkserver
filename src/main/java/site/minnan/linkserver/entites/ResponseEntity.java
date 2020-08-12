@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseEntity<T> {
 
-    private Integer code;
+    private String code;
 
     private String message;
 
     private T data;
 
-    public ResponseEntity(Integer code, String message) {
+    public ResponseEntity(String code, String message) {
         this.code = code;
         this.message = message;
     }
