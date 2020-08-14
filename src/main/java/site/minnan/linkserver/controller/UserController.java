@@ -3,6 +3,7 @@ package site.minnan.linkserver.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -19,6 +20,7 @@ import site.minnan.linkserver.utils.JwtUtil;
 import site.minnan.linkserver.utils.ResponseCode;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.Response;
 
 @RestController
 @Slf4j
@@ -42,7 +44,7 @@ public class UserController {
 
     @PostMapping("${jwt.route.authentication.path}")
     @ResponseBody
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         log.info(authenticationRequest.toString());
         try {
             manager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),

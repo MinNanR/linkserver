@@ -3,10 +3,12 @@ package site.minnan.linkserver.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.minnan.linkserver.entites.SignupDO;
 import site.minnan.linkserver.entites.UserInformation;
 import site.minnan.linkserver.entites.jwt.JwtUser;
@@ -62,11 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private UserInformation getUserByUsername(String username) {
-        UserInformation userInformationInRedis = (UserInformation) redisUtil.getValue("user::" + username);
-        if (userInformationInRedis != null) {
-            return userInformationInRedis;
-        }
+    private UserInformation getUserByUsername(String username){
         QueryWrapper<UserInformation> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("username", username);
         UserInformation userInformationInDB = userMapper.selectOne(userQueryWrapper);
@@ -76,5 +74,4 @@ public class UserServiceImpl implements UserService {
         }
         return userInformationInDB;
     }
-
 }
