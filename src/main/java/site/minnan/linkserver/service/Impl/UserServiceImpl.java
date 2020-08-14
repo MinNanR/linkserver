@@ -16,6 +16,8 @@ import site.minnan.linkserver.mapper.UserMapper;
 import site.minnan.linkserver.service.UserService;
 import site.minnan.linkserver.utils.RedisUtil;
 
+import java.time.Duration;
+
 @Service("CustomUserService")
 @Slf4j
 public class UserServiceImpl implements UserService {
@@ -29,10 +31,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     RedisUtil redisUtil;
 
-//    @Cacheable(value = "user", unless = "#result == null")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserInformation user = getUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("用户名不存在");
+        }
         return new JwtUser(user.getId(), user.getUsername(), user.getPassword(), user.getRole(), true);
     }
 
@@ -58,9 +62,19 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private UserInformation getUserByUsername(String username){
+    private UserInformation getUserByUsername(String username) {
+        UserInformation userInformationInRedis = (UserInformation) redisUtil.getValue("user::" + username);
+        if (userInformationInRedis != null) {
+            return userInformationInRedis;
+        }
         QueryWrapper<UserInformation> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("username", username);
-        return userMapper.selectOne(userQueryWrapper);
+        UserInformation userInformationInDB = userMapper.selectOne(userQueryWrapper);
+
+        if (userInformationInDB != null) {
+            redisUtil.valueSet("user::" + username, userInformationInDB, Duration.ofDays(7));
+        }
+        return userInformationInDB;
     }
+
 }

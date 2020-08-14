@@ -24,7 +24,7 @@ server:
 jwt:
   route:
     authentication:
-      path: /auth
+      path: /login
   header: Authorization
   expiration: 604800
   scret: min107

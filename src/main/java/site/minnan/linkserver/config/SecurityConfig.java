@@ -1,6 +1,7 @@
 package site.minnan.linkserver.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 @Configuration
+@Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -60,6 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, ex) -> {
+                    log.error("错误类型: {}", ex.getClass().toString());
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                 })
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

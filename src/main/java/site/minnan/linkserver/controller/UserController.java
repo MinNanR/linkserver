@@ -3,29 +3,24 @@ package site.minnan.linkserver.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import site.minnan.linkserver.entites.SignupDO;
-import site.minnan.linkserver.entites.UserInformation;
+import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.entites.jwt.JwtRequest;
 import site.minnan.linkserver.entites.jwt.JwtResponse;
 import site.minnan.linkserver.entites.jwt.JwtUser;
-import site.minnan.linkserver.exception.CodeNotValidatedException;
-import site.minnan.linkserver.exception.UserExistException;
 import site.minnan.linkserver.service.UserService;
 import site.minnan.linkserver.utils.JwtUtil;
+import site.minnan.linkserver.utils.ResponseCode;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
 
-@Controller
+@RestController
 @Slf4j
 public class UserController {
 
@@ -41,10 +36,8 @@ public class UserController {
     @Value("${jwt.header}")
     private String tokenHeader;
 
-    @RequestMapping("/authentication/loginFail")
-    public String loginFail() {
-        return "login";
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @PostMapping("${jwt.route.authentication.path}")
@@ -55,17 +48,15 @@ public class UserController {
             manager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                     authenticationRequest.getPassword()));
         } catch (DisabledException e) {
-            e.printStackTrace();
-            throw new Exception("USER_DISABLED", e);
+            throw new Exception("用户被禁用", e);
         } catch (BadCredentialsException e) {
-            e.printStackTrace();
-            throw new Exception("INVALID_CREDENTIALS", e);
-        } catch (Exception e){
-            e.printStackTrace();
+            throw  new Exception("用户名或密码错误", e);
         }
         UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
         String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        ResponseEntity<JwtResponse> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "登录成功");
+        responseEntity.setData(new JwtResponse(token));
+        return responseEntity;
     }
 
     @GetMapping("/token")
