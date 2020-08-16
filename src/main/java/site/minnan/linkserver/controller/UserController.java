@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.Response;
 
 @RestController
+@CrossOrigin
 @Slf4j
 public class UserController {
 
@@ -60,26 +61,6 @@ public class UserController {
         return responseEntity;
     }
 
-    @GetMapping("/token")
-    @ResponseBody
-    public JwtUser getAuthenticatedUser(HttpServletRequest request) {
-        String token = request.getHeader(tokenHeader).substring(7);
-        String username = jwtUtil.getUsernameFromToken(token);
-        return (JwtUser) userService.loadUserByUsername(username);
-    }
 
-
-//    @PostMapping("/user/signup")
-//    public ModelAndView signup(SignupDO signupDO) {
-//        ModelAndView mv = new ModelAndView();
-//        try {
-//            UserInformation newUser = userService.createUser(signupDO);
-//            mv.setViewName("redirect: /login");
-//        } catch (CodeNotValidatedException | UserExistException e) {
-//            mv.addObject("errorMessage", e.getMessage());
-//            mv.setViewName("signup");
-//        }
-//        return mv;
-//    }
 
 }
