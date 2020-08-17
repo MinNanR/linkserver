@@ -1,4 +1,5 @@
 import axios from 'axios'
+import vm from '../main.js'
 
 const request = axios.create({
     baseURL: "http://localhost:8989",
@@ -18,8 +19,6 @@ request.interceptors.request.use(
     config => {
         let token = localStorage.getItem('token')
         config.headers.authorization = token
-        console.log(token)
-        console.log(config)
         return config;
     },
     error => {
@@ -29,6 +28,7 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
     response => {
+        console.log(response.status)
         if (response.status === 200) {
             let data = response.data
             if (data.code === '000') {
@@ -41,6 +41,15 @@ request.interceptors.response.use(
         }
     },
     error => {
+        if(error.response.status === 401){
+            localStorage.removeItem("token")
+            alert("登录信息过期")
+            vm.$router.push("/login")
+        }else if(error.response.status === 403){
+            localStorage.removeItem("token")
+            alert("无权限")
+            vm.$router.push
+        }
         return Promise.reject(error)
     }
 )

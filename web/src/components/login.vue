@@ -50,7 +50,7 @@ export default {
           console.log(response)
           let token = response.jwtToken
           localStorage.setItem('token', `Bearer ${token}`)
-          this.$router.push('/')
+          this.$router.push(response.redirectUrl)
         })
         .catch(error => {
           console.log(error)

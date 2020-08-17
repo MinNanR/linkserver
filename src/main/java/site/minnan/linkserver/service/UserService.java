@@ -2,8 +2,8 @@ package site.minnan.linkserver.service;
 
 
 import org.springframework.security.core.userdetails.UserDetailsService;
-import site.minnan.linkserver.entites.SignupDO;
-import site.minnan.linkserver.entites.UserInformation;
+import site.minnan.linkserver.entites.DTO.SignupDO;
+import site.minnan.linkserver.entites.DO.UserInformation;
 import site.minnan.linkserver.exception.CodeNotValidatedException;
 import site.minnan.linkserver.exception.UserExistException;
 

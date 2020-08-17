@@ -3,7 +3,7 @@ package site.minnan.linkserver.service.Impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import site.minnan.linkserver.entites.LinkInformation;
+import site.minnan.linkserver.entites.DO.LinkInformation;
 import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.mapper.LinkInformationMapper;
 import site.minnan.linkserver.service.LinkService;

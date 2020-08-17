@@ -1,6 +1,6 @@
 package site.minnan.linkserver.service;
 
-import site.minnan.linkserver.entites.LinkInformation;
+import site.minnan.linkserver.entites.DO.LinkInformation;
 import site.minnan.linkserver.entites.ResponseEntity;
 
 import java.util.List;

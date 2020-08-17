@@ -1,4 +1,4 @@
-package site.minnan.linkserver.entites;
+package site.minnan.linkserver.entites.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

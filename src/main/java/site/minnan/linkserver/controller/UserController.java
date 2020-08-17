@@ -7,19 +7,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import site.minnan.linkserver.entites.ResponseEntity;
+import site.minnan.linkserver.entites.VO.LoginVO;
 import site.minnan.linkserver.entites.jwt.JwtRequest;
-import site.minnan.linkserver.entites.jwt.JwtResponse;
-import site.minnan.linkserver.entites.jwt.JwtUser;
 import site.minnan.linkserver.service.UserService;
 import site.minnan.linkserver.utils.JwtUtil;
 import site.minnan.linkserver.utils.ResponseCode;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -44,7 +44,7 @@ public class UserController {
 
     @PostMapping("${jwt.route.authentication.path}")
     @ResponseBody
-    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<LoginVO> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         log.info(authenticationRequest.toString());
         try {
             manager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
@@ -52,15 +52,19 @@ public class UserController {
         } catch (DisabledException e) {
             throw new Exception("用户被禁用", e);
         } catch (BadCredentialsException e) {
-            throw  new Exception("用户名或密码错误", e);
+            throw new Exception("用户名或密码错误", e);
         }
         UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
         String token = jwtUtil.generateToken(userDetails);
-        ResponseEntity<JwtResponse> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "登录成功");
-        responseEntity.setData(new JwtResponse(token));
+        ResponseEntity<LoginVO> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "登录成功");
+        LoginVO vo = new LoginVO();
+        vo.setJwtToken(token);
+        ArrayList<Object> authoritiesStringList =
+                userDetails.getAuthorities().stream().collect(ArrayList::new, (list, au) -> list.add(au.getAuthority()), ArrayList::addAll);
+        vo.setRedirectUrl(authoritiesStringList.contains("ADMIN") ? "/manager" : "/link");
+        responseEntity.setData(vo);
         return responseEntity;
     }
-
 
 
 }

@@ -1,8 +1,9 @@
 package site.minnan.linkserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import site.minnan.linkserver.entites.LinkInformation;
+import site.minnan.linkserver.entites.DO.LinkInformation;
 import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.service.LinkService;
 import site.minnan.linkserver.utils.ResponseCode;
@@ -16,6 +17,7 @@ public class LinkController {
     @Autowired
     LinkService linkService;
 
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @PostMapping("api/getAllLinkList")
     public ResponseEntity<List<LinkInformation>> getAllLinks(){
         List<LinkInformation> allLinkList = linkService.getAllLinkList();

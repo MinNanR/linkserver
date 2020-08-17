@@ -1,4 +1,4 @@
-package site.minnan.linkserver.entites;
+package site.minnan.linkserver.entites.DO;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

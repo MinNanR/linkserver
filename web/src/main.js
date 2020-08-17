@@ -18,18 +18,24 @@ Vue.use(VueCookies)
 
 router.beforeEach((to, from, next) => {
   console.log(to.path)
-  if(to.path != '/login'){
+  if (to.path != '/login') {
     const token = localStorage.getItem("token")
-    if(token == null){
+    if (token == null) {
       next('/login')
+    } else {
+      next()
     }
+  } else {
+    next()
   }
   document.title = `${to.meta.title}`
-  next()
+
 })
 
-new Vue({
+const vm = new Vue({
   router,
   $,
   render: h => h(App),
 }).$mount('#app')
+
+export default vm
