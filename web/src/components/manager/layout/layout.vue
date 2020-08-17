@@ -46,51 +46,51 @@ import $ from "jquery";
 export default {
   data() {
     return {
-      currentPageIndex:0,
+      currentPageIndex: 0,
       navList: [
         {
           name: "主页",
           icon: "glyphicon glyphicon-home",
           url: "/manager",
-          class:"active"
+          class: "active",
         },
         {
           name: "链接管理",
           icon: "glyphicon glyphicon-paperclip",
           url: "/manager/link",
-          class:""
+          class: "",
         },
         {
           name: "工具管理",
           icon: "glyphicon glyphicon-folder-open",
           url: "/manager/tools",
-          class:""
+          class: "",
         },
         {
           name: "使用说明",
           icon: "glyphicon glyphicon-wrench",
           url: "/manager/introduction",
-          class:""
+          class: "",
         },
         {
           name: "用户管理",
           icon: "glyphicon glyphicon-user",
           url: "/manager/user",
-          class:""
+          class: "",
         },
         {
           name: "日志",
           icon: "glyphicon glyphicon-file",
           url: "/manager/logs",
-          class:""
+          class: "",
         },
       ],
     };
   },
-  methods:{
+  methods: {
     switchPage(i) {
-      if(i === this.currentPageIndex){
-        return
+      if (i === this.currentPageIndex) {
+        return;
       }
       //改变样式
       this.navList.forEach((item, index) => {
@@ -100,7 +100,7 @@ export default {
           item.class = "";
         }
       });
-      this.currentPageIndex = i
+      this.currentPageIndex = i;
       this.$router.push(this.navList[i].url);
     },
   },
@@ -135,7 +135,7 @@ export default {
 </script>
 
 <style>
-.active{
+.active {
   background-color: #7c5aae;
   color: black;
 }
