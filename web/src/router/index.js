@@ -51,42 +51,42 @@ export default new Router({
                     path:"/",
                     component: () => import('../components/manager/page/index.vue'),
                     meta:{
-                        title:'管理平台'
+                        title:'链接管理器'
                     }
                 },
                 {
                     path:"link",
                     component: () => import('../components/manager/page/link.vue'),
                     meta:{
-                        title:'管理平台'
+                        title:'链接管理器'
                     }
                 },
                 {
                     path:"tools",
                     component: () => import('../components/manager/page/tools.vue'),
                     meta:{
-                        title:'管理平台'
+                        title:'链接管理器'
                     }
                 },
                 {
                     path:"introduction",
                     component: () => import('../components/manager/page/introduction.vue'),
                     meta:{
-                        title:'管理平台'
+                        title:'链接管理器'
                     }
                 },
                 {
                     path:"user",
                     component: () => import('../components/manager/page/user.vue'),
                     meta:{
-                        title:'管理平台'
+                        title:'链接管理器'
                     }
                 },
                 {
                     path:"logs",
                     component: () => import('../components/manager/page/logs.vue'),
                     meta:{
-                        title:'管理平台'
+                        title:'链接管理器'
                     }
                 }
             ]

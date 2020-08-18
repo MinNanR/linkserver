@@ -6,7 +6,7 @@ import $ from 'jquery'
 import 'jquery'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/js/bootstrap.min.js'
+// import 'bootstrap/dist/js/bootstrap.min.js'
 import VueCookies from 'vue-cookies'
 
 import request from '@/utils/request.js'
