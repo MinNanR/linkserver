@@ -46,7 +46,7 @@ export default {
     methods:{
       login(){
         this.request.post('/login', this.loginForm)
-        .then(response => {
+        .then(response=> {
           console.log(response)
           let token = response.jwtToken
           localStorage.setItem('token', `Bearer ${token}`)

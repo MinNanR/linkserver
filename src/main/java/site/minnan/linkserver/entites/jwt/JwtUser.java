@@ -10,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,14 +50,15 @@ public class JwtUser implements UserDetails {
         return authorities;
     }
 
-    private List<GrantedAuthority> mapToGrantedAuthorities(List<String> authorities) {
+    private List<GrantedAuthority> mapToGrantedAuthorities(List<String>
+                                                                   authorities) {
         return authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority))
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
 
     private List<GrantedAuthority> mapToGrantedAuthorities(String authority) {
-        return Arrays.asList(new SimpleGrantedAuthority(authority));
+        return Collections.singletonList(new SimpleGrantedAuthority(authority));
     }
 
     public JwtUser(Integer id, String username, String password, List<String> authorities, Boolean enabled) {

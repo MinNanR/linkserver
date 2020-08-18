@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.minnan.linkserver.entites.DO.LinkInformation;
+import site.minnan.linkserver.entites.DTO.AddLinkDTO;
+import site.minnan.linkserver.entites.DTO.DeleteLinkDTO;
+import site.minnan.linkserver.entites.DTO.UpdateLinkDTO;
 import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.service.LinkService;
 import site.minnan.linkserver.utils.ResponseCode;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,19 +23,26 @@ public class LinkController {
 
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @PostMapping("api/getAllLinkList")
-    public ResponseEntity<List<LinkInformation>> getAllLinks(){
+    public ResponseEntity<List<LinkInformation>> getAllLinks() {
         List<LinkInformation> allLinkList = linkService.getAllLinkList();
         ResponseEntity<List<LinkInformation>> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "查询成功");
         responseEntity.setData(allLinkList);
         return responseEntity;
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/addLink")
-    public ResponseEntity<?> addLink(@RequestBody LinkInformation linkInformation){
-        return linkService.addLink(linkInformation);
+    public ResponseEntity<?> addLink(@RequestBody @Valid AddLinkDTO dto) {
+        return linkService.addLink(dto);
     }
 
-    public ResponseEntity<?> deleteLink(@RequestBody LinkInformation linkInformation){
-        return null;
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/deleteLink")
+    public ResponseEntity<?> deleteLink(@RequestBody @Valid DeleteLinkDTO dto) {
+        return linkService.deleteLink(dto);
+    }
+
+    public ResponseEntity<?> updateLink(@RequestBody @Valid UpdateLinkDTO dto){
+        return linkService.updateLink(dto);
     }
 }
