@@ -101,6 +101,7 @@
             <div class="modal-body" v-if="linkToDeleteIndex > -1">
               确认删除节点
               <b>{{linkList[linkToDeleteIndex].name}}</b>
+              吗？
             </div>
             <div class="modal-footer">
               <button class="btn btn-default" @click="handleDeleteConfirm">确认</button>
@@ -191,7 +192,7 @@ export default {
   methods: {
     getLinkList() {
       this.request.post("/api/getAllLinkList").then((response) => {
-        this.linkList = response;
+        this.linkList = response.data;
         this.linkToDeleteIndex = -1;
       });
     },
@@ -217,9 +218,9 @@ export default {
     postAddLink() {
       this.request
         .post("/manager/addLink", this.newLink)
-        .then(() => {
+        .then((response) => {
           $("#newLinkModal").modal("hide");
-          alert("添加成功");
+          alert(response.message);
           this.getLinkList();
         })
         .catch((error) => {
@@ -234,9 +235,9 @@ export default {
       let id = this.linkList[this.linkToDeleteIndex].id;
       this.request
         .post("/manager/deleteLink", { id: id })
-        .then(() => {
+        .then((response) => {
           $("#deletLinkModal").modal("hide");
-          alert("删除成功");
+          alert(response.message);
           this.getLinkList();
         })
         .catch((error) => {
@@ -249,9 +250,33 @@ export default {
       this.linkToUpdate.link = this.linkList[index].link;
       $("#updateLinkModal").modal("show");
     },
-    handleUpdateConfirm(){
-      
-    }
+    handleUpdateConfirm() {
+      const validator = new Schema(this.rules);
+      validator
+        .validate(this.linkToUpdate)
+        .then(() => {
+          this.postUpdateLink();
+        })
+        .catch(({ errors, fields }) => {
+          if (errors) {
+            for (let key in fields) {
+              alert(fields[key][0].message);
+            }
+          }
+        });
+    },
+    postUpdateLink() {
+      this.request
+        .post("/manager/updateLink", this.linkToUpdate)
+        .then((response) => {
+          $("#updateLinkModal").modal("hide");
+          alert(response.message);
+          this.getLinkList();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   mounted() {
     this.getLinkList();
@@ -259,6 +284,7 @@ export default {
       this.handleModalClose();
     });
   },
+
 };
 </script>
 

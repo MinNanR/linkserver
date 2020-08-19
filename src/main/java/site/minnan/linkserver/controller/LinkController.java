@@ -42,6 +42,8 @@ public class LinkController {
         return linkService.deleteLink(dto);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("manager/updateLink")
     public ResponseEntity<?> updateLink(@RequestBody @Valid UpdateLinkDTO dto){
         return linkService.updateLink(dto);
     }

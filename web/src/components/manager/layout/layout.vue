@@ -42,6 +42,7 @@
 <script>
 import "@/assets/css/manager.css";
 import $ from "jquery";
+import request from '@/utils/request.js'
 
 export default {
   data() {
@@ -131,6 +132,11 @@ export default {
       $("#wrapper").toggleClass("toggled");
     });
   },
+    beforeRouteEnter(to, from , next){
+    console.log(to.path)
+    request.post
+    next()
+  }
 };
 </script>
 

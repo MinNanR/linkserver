@@ -28,11 +28,10 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
     response => {
-        console.log(response.status)
         if (response.status === 200) {
             let data = response.data
             if (data.code === '000') {
-                return data.data
+                return { data: data.data, message: data.message }
             } else {
                 Promise.reject(data.message)
             }
@@ -41,16 +40,20 @@ request.interceptors.response.use(
         }
     },
     error => {
-        if(error.response.status === 401){
-            localStorage.removeItem("token")
-            alert("登录信息过期")
-            vm.$router.push("/login")
-        }else if(error.response.status === 403){
-            localStorage.removeItem("token")
-            alert("无权限")
-            vm.$router.push
+        if (error.response.status != null) {
+            if (error.response.status === 401) {
+                localStorage.removeItem("token")
+                alert("登录信息过期")
+                vm.$router.push("/login")
+            } else if (error.response.status === 403) {
+                localStorage.removeItem("token")
+                alert("无权限")
+                vm.$router.push('/login')
+            }
+            Promise.reject(error)
+        } else {
+            Promise.reject(error)
         }
-        return Promise.reject(error)
     }
 )
 

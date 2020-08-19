@@ -21,6 +21,7 @@ spring:
 server:
   port: 8989
 
+
 jwt:
   route:
     authentication:
@@ -28,3 +29,7 @@ jwt:
   header: Authorization
   expiration: 604800
   scret: min107
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

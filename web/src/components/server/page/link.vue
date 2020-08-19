@@ -49,12 +49,12 @@ export default {
   methods: {
     getLinkList() {
       this.request.post("/api/getAllLinkList").then((response) => {
-        this.linkList = response
+        this.linkList = response.data;
       });
     },
   },
   mounted() {
-    this.getLinkList()
+    this.getLinkList();
   },
 };
 </script>

@@ -47,10 +47,10 @@ export default {
       login(){
         this.request.post('/login', this.loginForm)
         .then(response=> {
-          console.log(response)
-          let token = response.jwtToken
+          let data = response.data
+          let token = data.jwtToken
           localStorage.setItem('token', `Bearer ${token}`)
-          this.$router.push(response.redirectUrl)
+          this.$router.push(data.redirectUrl)
         })
         .catch(error => {
           console.log(error)

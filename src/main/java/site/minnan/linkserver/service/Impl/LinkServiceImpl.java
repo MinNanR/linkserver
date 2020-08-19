@@ -56,6 +56,7 @@ public class LinkServiceImpl implements LinkService {
     @Override
     public ResponseEntity<?> updateLink(UpdateLinkDTO dto) {
         LinkInformation updateLink = new LinkInformation();
+        updateLink.setId(dto.getId());
         updateLink.setName(dto.getName());
         updateLink.setLink(dto.getLink());
         updateLink.setCreateTime(Timestamp.from(Instant.now()));

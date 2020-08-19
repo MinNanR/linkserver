@@ -17,7 +17,6 @@ Vue.prototype.request = request
 Vue.use(VueCookies)
 
 router.beforeEach((to, from, next) => {
-  console.log(to.path)
   if (to.path != '/login') {
     const token = localStorage.getItem("token")
     if (token == null) {

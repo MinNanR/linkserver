@@ -44,6 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         //获取token
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
+            System.out.println(jwtUtil.getExpirationDateFromToken(jwtToken));
             try {
                 username = jwtUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {

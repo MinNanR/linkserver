@@ -7,9 +7,13 @@ module.exports = {
                 $: 'jquery',
                 jQuery: 'jquery',
                 "window.jQuery":"jquery",
+                "window.Quill":'quill',
                 Popper:["popper.js","default"]
             })
         ]
+    },
+    devServer:{
+        port:3000
     }
 }
 
