@@ -11,8 +11,13 @@ import VueCookies from 'vue-cookies'
 
 import request from '@/utils/request.js'
 
+sessionStorage.setItem("baseUrl", "http://localhost:8989")
+
+
 Vue.config.productionTip = false
 Vue.prototype.request = request
+
+
 
 Vue.use(VueCookies)
 

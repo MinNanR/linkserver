@@ -33,3 +33,10 @@ jwt:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+aliyun:
+  endpoint: oss-cn-shenzhen.aliyuncs.com
+  accessKeyId: LTAI4G8ayrXQHYJt2PxFsJLg
+  accessKeySecret: eJUhpui1iVSOPxu5WHek2LbNEodncR
+  bucketName: link-server
+  urlPrefix: link-server.oss-cn-shenzhen.aliyuncs.com

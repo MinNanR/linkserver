@@ -6,7 +6,7 @@
           <tr>
             <th style="width:10%">节点名</th>
             <th style="width:50%">url</th>
-            <th style="wdith:20%">更新时间</th>
+            <th style="width:20%">更新时间</th>
             <th style="width:20%">操作</th>
           </tr>
         </thead>
@@ -14,7 +14,7 @@
           <tr v-for="(item, index) in linkList" :key="index">
             <th>{{item.name}}</th>
             <th>{{item.link}}</th>
-            <th>{{item.createTime}}</th>
+            <th>{{item.updateTime}}</th>
             <th>
               <button class="btn btn-default btn-xs" title="修改" @click="openUpdateModal(index)">
                 <span class="iconfont icon-edit"></span>

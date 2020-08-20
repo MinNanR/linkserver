@@ -23,7 +23,6 @@ public class LinkServiceImpl implements LinkService {
     @Autowired
     LinkInformationMapper linkInformationMapper;
 
-
     @Override
     public List<LinkInformation> getAllLinkList() {
         return linkInformationMapper.selectList(null);
@@ -34,7 +33,7 @@ public class LinkServiceImpl implements LinkService {
         LinkInformation link = new LinkInformation();
         link.setName(dto.getName());
         link.setLink(dto.getLink());
-        link.setCreateTime(Timestamp.from(Instant.now()));
+        link.setUpdateTime(Timestamp.from(Instant.now()));
         int i = linkInformationMapper.insert(link);
         if (i > 0) {
             return new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "插入成功");
@@ -59,7 +58,7 @@ public class LinkServiceImpl implements LinkService {
         updateLink.setId(dto.getId());
         updateLink.setName(dto.getName());
         updateLink.setLink(dto.getLink());
-        updateLink.setCreateTime(Timestamp.from(Instant.now()));
+        updateLink.setUpdateTime(Timestamp.from(Instant.now()));
         int i = linkInformationMapper.updateById(updateLink);
         if (i>0) {
             return new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "更新成功");

@@ -9,7 +9,7 @@
         <h4 class="panel-title">
           <a
             role="button"
-            :href="`#collapse${item.index}`"
+            :href="`#collapse${item.id}`"
             data-toggle="collapse"
             data-parent="#accordion"
             aria-expanded="true"
@@ -19,8 +19,7 @@
               <span style="font-weight: bold">{{item.name}}</span>
               <span
                 style="float:right;font-size: 0.5rem"
-                th:text="${'更新时间:' +  #dates.format(item.createTime, 'yyyy-MM-dd HH:mm:ss')}"
-              >{{item.createTime}}</span>
+              >{{item.updateTime}}</span>
             </span>
           </a>
         </h4>
@@ -29,7 +28,7 @@
         class="panel-collapse collapse"
         role="tabpanel"
         aria-labelledby="headingOne"
-        :id="`collapse${item.index}`"
+        :id="`collapse${item.id}`"
       >
         <div class="panel-body">
           <div class="link-div" style="font-size: 1.5rem">{{item.link}}</div>

@@ -20,5 +20,5 @@ public class LinkInformation {
     private String link;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
-    private Timestamp createTime;
+    private Timestamp updateTime;
 }

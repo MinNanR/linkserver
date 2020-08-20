@@ -63,6 +63,10 @@ public class UserServiceImpl implements UserService {
 
 
     private UserInformation getUserByUsername(String username){
+        UserInformation userInformation = (UserInformation) redisUtil.getValue("user::" + username);
+        if (userInformation != null) {
+            return userInformation;
+        }
         QueryWrapper<UserInformation> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("username", username);
         UserInformation userInformationInDB = userMapper.selectOne(userQueryWrapper);
