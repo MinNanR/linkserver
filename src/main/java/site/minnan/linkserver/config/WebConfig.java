@@ -27,6 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
         //加上了这一句，大致意思是可以携带 cookie
         //最终的结果是可以 在跨域请求的时候获取同一个 session
         corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addExposedHeader("Content-Disposition");
         return corsConfiguration;
     }
 

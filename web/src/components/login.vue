@@ -28,7 +28,6 @@
         />
       </div>
       <button type="button" @click="login" class="btn btn-primary" style="margin-right: 20px">登录</button>
-      <button type="button" class="btn btn-primary" onclick="toSignup()">注册</button>
     </form>
   </div>
 </template>

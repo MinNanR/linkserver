@@ -42,7 +42,6 @@
 <script>
 import "@/assets/css/manager.css";
 import $ from "jquery";
-import request from '@/utils/request.js'
 
 export default {
   data() {
@@ -53,7 +52,7 @@ export default {
           name: "主页",
           icon: "glyphicon glyphicon-home",
           url: "/manager",
-          class: "active",
+          class: "",
         },
         {
           name: "链接管理",
@@ -131,12 +130,22 @@ export default {
     $('[data-toggle="offcanvas"]').click(function () {
       $("#wrapper").toggleClass("toggled");
     });
+
+    setTimeout(() => {
+      //根据当前路径高亮导航
+      let currentPath = this.$route.path
+      this.navList.forEach((item) => {
+        if(item.url == currentPath){
+          item.class = "active"
+        }else{
+          item.class = ""
+        }
+      })
+    }, 100)
   },
-    beforeRouteEnter(to, from , next){
-    console.log(to.path)
-    request.post
-    next()
-  }
+  beforeRouteEnter(to, from, next) {
+    next();
+  },
 };
 </script>
 

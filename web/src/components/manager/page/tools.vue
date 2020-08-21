@@ -18,10 +18,7 @@
             <th>{{item.size | resize}} MB</th>
             <th>{{item.updateTime}}</th>
             <th>
-              <button
-                class="btn btn-default btn-xs"
-                title="下载"
-              >
+              <button class="btn btn-default btn-xs" title="下载">
                 <span class="iconfont icon-download"></span>
               </button>
               <button
@@ -127,7 +124,7 @@ export default {
       name: "",
       file: null,
       toolsList: [],
-      toolsToDeleteIndex: -1
+      toolsToDeleteIndex: -1,
     };
   },
   methods: {
@@ -164,22 +161,22 @@ export default {
         this.toolsList = response.data;
       });
     },
-     openDeleteModal(index) {
+    openDeleteModal(index) {
       this.toolsToDeleteIndex = index;
       $("#deleteToolsModal").modal("show");
     },
-    handleDeleteConfirm(){
-      let id = this.toolsList[this.toolsToDeleteIndex].id
+    handleDeleteConfirm() {
+      let id = this.toolsList[this.toolsToDeleteIndex].id;
       this.request
-      .post('/manager/deleteTools', {id: id})
-      .then(response => {
-        $("#deleteToolsModal").modal("hide")
-        alert(response.message)
-        this.getToolsList()
-      })
-      .catch(error => {
-        console.log(error)
-      })
+        .post("/manager/deleteTools", { id: id })
+        .then((response) => {
+          $("#deleteToolsModal").modal("hide");
+          alert(response.message);
+          this.getToolsList();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   },
   mounted() {

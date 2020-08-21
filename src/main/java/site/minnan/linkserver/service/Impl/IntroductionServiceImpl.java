@@ -2,6 +2,7 @@ package site.minnan.linkserver.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import site.minnan.linkserver.entites.DTO.UpdateIntroductionDTO;
 import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.entites.VO.IntroductionVO;
@@ -24,6 +25,6 @@ public class IntroductionServiceImpl implements IntroductionService {
     @Override
     public IntroductionVO getIntroduction() {
         String introduction = (String) redisUtil.getValue("introduction");
-        return new IntroductionVO(introduction.length() > 0 ? introduction : "敬请期待");
+        return new IntroductionVO(StringUtils.isEmpty(introduction) ? "敬请期待" : introduction);
     }
 }

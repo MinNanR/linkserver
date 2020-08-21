@@ -5,5 +5,5 @@ import org.apache.ibatis.annotations.Mapper;
 import site.minnan.linkserver.entites.DO.UserInformation;
 
 @Mapper
-public interface UserMapper extends BaseMapper<UserInformation> {
+public interface  UserMapper extends BaseMapper<UserInformation> {
 }

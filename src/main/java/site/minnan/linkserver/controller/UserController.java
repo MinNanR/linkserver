@@ -1,23 +1,33 @@
 package site.minnan.linkserver.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import site.minnan.linkserver.entites.DTO.AddUserDTO;
+import site.minnan.linkserver.entites.DTO.DeleteUserDTO;
+import site.minnan.linkserver.entites.DTO.UpdateUserDTO;
+import site.minnan.linkserver.entites.DTO.ValidateUserDTO;
 import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.entites.VO.LoginVO;
+import site.minnan.linkserver.entites.VO.UserInformationVO;
 import site.minnan.linkserver.entites.jwt.JwtRequest;
+import site.minnan.linkserver.entites.jwt.JwtUser;
 import site.minnan.linkserver.service.UserService;
 import site.minnan.linkserver.utils.JwtUtil;
 import site.minnan.linkserver.utils.ResponseCode;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +45,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Value("${jwt.header}")
-    private String tokenHeader;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
     @PostMapping("${jwt.route.authentication.path}")
-    @ResponseBody
     public ResponseEntity<LoginVO> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         log.info(authenticationRequest.toString());
         try {
@@ -66,5 +68,39 @@ public class UserController {
         return responseEntity;
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/getUserList")
+    public ResponseEntity<List<UserInformationVO>> getUserInformationList(){
+        List<UserInformationVO> userInformationList = userService.getUserInformationList();
+        ResponseEntity<List<UserInformationVO>> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "获取成功");
+        responseEntity.setData(userInformationList);
+        return responseEntity;
+    }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/validateUser")
+    public ResponseEntity<?> validateUser(UsernamePasswordAuthenticationToken authentication, @RequestBody ValidateUserDTO dto){
+        dto.setJwtUser((JwtUser) authentication.getPrincipal());
+        ResponseEntity<Boolean> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "");
+        responseEntity.setData(userService.validateUser(dto));
+        return responseEntity;
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/addUser")
+    public ResponseEntity<?> addUser(@RequestBody AddUserDTO dto){
+        return userService.createUser(dto);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/updateUser")
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserDTO dto){
+        return userService.updateUser(dto);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/deleteUser")
+    public ResponseEntity<?> deleteUser(@RequestBody DeleteUserDTO dto){
+        return userService.deleteUser(dto);
+    }
 }

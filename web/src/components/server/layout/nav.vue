@@ -56,7 +56,7 @@ export default {
         {
           name: "使用说明",
           class: "",
-          url: "introduction",
+          url: "/introduction",
         },
       ],
     };
@@ -83,6 +83,19 @@ export default {
           $("#navbar").collapse('hide')
       })
     }
+
+    setTimeout(() => {
+      //根据当前路径高亮导航
+      let currentPath = this.$route.path
+      console.log(currentPath)
+      this.navList.forEach((item) => {
+        if(item.url == currentPath){
+          item.class = "active"
+        }else{
+          item.class = ""
+        }
+      })
+    }, 100)
   },
 };
 </script>

@@ -3,6 +3,7 @@ package site.minnan.linkserver.service.Impl;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.OSSObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,16 @@ import org.springframework.web.multipart.MultipartFile;
 import site.minnan.linkserver.entites.DO.Tools;
 import site.minnan.linkserver.entites.DTO.AddToolsDTO;
 import site.minnan.linkserver.entites.DTO.DeleteToolsDTO;
+import site.minnan.linkserver.entites.DTO.DownloadToolsDTO;
 import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.entites.VO.ToolsVO;
 import site.minnan.linkserver.mapper.ToolsMapper;
 import site.minnan.linkserver.service.ToolsService;
 import site.minnan.linkserver.utils.ResponseCode;
 
-import java.io.IOException;
-import java.io.InputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -90,16 +93,63 @@ public class ToolsServiceImpl implements ToolsService {
             return new ResponseEntity<>(ResponseCode.CODE_FAIL, "工具不存在");
         }
         int i = toolsMapper.delete(queryWrapper);
-        if (i>0) {
-            try{
+        if (i > 0) {
+            try {
                 oss.deleteObject(bucketName, tools.getOssKey());
                 return new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "删除成功");
-            } catch (OSSException | ClientException e){
+            } catch (OSSException | ClientException e) {
                 log.error("删除oss文件失败，key：{}", tools.getOssKey());
                 return new ResponseEntity<>(ResponseCode.CODE_FAIL, "删除oss内工具失败");
             }
         }
         return new ResponseEntity<>(ResponseCode.CODE_FAIL, "数据库错误，删除失败");
+    }
+
+    @Override
+    public ResponseEntity<?> downloadTools(DownloadToolsDTO dto, HttpServletResponse response) throws UnsupportedEncodingException {
+        QueryWrapper<Tools> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", dto.getId());
+        Tools tools = toolsMapper.selectOne(queryWrapper);
+        if (tools == null) {
+            return new ResponseEntity<>(ResponseCode.CODE_FAIL, "工具不存在");
+        }
+        OSSObject ossObject = oss.getObject(bucketName, tools.getOssKey());
+        String filename = URLEncoder.encode(tools.getFileName() + "." + tools.getExtension(), "UTF-8");
+        response.addHeader("Content-Disposition", "attachment;filename=" + filename);
+        response.setContentType("multiparty/form-data");
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new BufferedInputStream(ossObject.getObjectContent());
+            os = new BufferedOutputStream(response.getOutputStream());
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = is.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+            os.flush();
+            os.close();
+            is.close();
+        } catch (IOException e) {
+            log.error("读取oss文件失败，{}", e.getMessage());
+            return new ResponseEntity<>(ResponseCode.CODE_FAIL, e.getMessage());
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(is != null){
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "下载成功");
     }
 
 }
