@@ -31,7 +31,6 @@
 
 <script>
 import "@/assets/fonts/iconfont.css";
-import axios from "axios";
 
 export default {
   data() {
@@ -46,31 +45,22 @@ export default {
       });
     },
     downloadTools(id) {
-      const baseUrl = sessionStorage.getItem("baseUrl");
-      axios({
-        url: `${baseUrl}/api/downloadTools`,
-        params: {
-          id: id,
-        },
-        headers:{
-          authorization: localStorage.getItem("token"),
-        },
-        method: "get",
-        responseType: "blob",
-      }).then((response) => {
-        let filename = response.headers["content-disposition"].split(";")[1].split("filename=")[1]
-        const blob = response.data;
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onload = (e) => {
+      this.request
+        .post("api/downloadTools", { id: id })
+        .then((response) => {
+          let downloadUrl = response.data.downloadUrl;
+          let fileName = response.data.fileName;
+          console.log(downloadUrl, fileName)
           const a = document.createElement("a");
-          a.download = filename;
-          a.href = e.target.result;
+          a.href = downloadUrl;
+          a.download = fileName;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-        };
-      });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   mounted() {

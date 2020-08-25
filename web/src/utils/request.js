@@ -1,9 +1,10 @@
 import axios from 'axios'
 import vm from '../main.js'
-// console.log(vm.$router)
+import config from './config.js'
+console.log(config.baseUrl)
 
 const request = axios.create({
-    baseURL: sessionStorage.getItem("baseUrl"),
+    baseURL: config.baseUrl,
     timeout: 30000,
     headers: {
         'Content-Type': 'application/json',

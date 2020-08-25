@@ -2,19 +2,17 @@ package site.minnan.linkserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import site.minnan.linkserver.entites.DTO.AddToolsDTO;
 import site.minnan.linkserver.entites.DTO.DeleteToolsDTO;
 import site.minnan.linkserver.entites.DTO.DownloadToolsDTO;
 import site.minnan.linkserver.entites.ResponseEntity;
+import site.minnan.linkserver.entites.VO.DownloadToolsVO;
 import site.minnan.linkserver.entites.VO.ToolsVO;
 import site.minnan.linkserver.service.ToolsService;
 import site.minnan.linkserver.utils.ResponseCode;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -45,8 +43,8 @@ public class ToolsController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    @GetMapping("api/downloadTools")
-    public void downloadTools(DownloadToolsDTO dto, HttpServletResponse response) throws UnsupportedEncodingException {
-        toolsService.downloadTools(dto, response);
+    @PostMapping("api/downloadTools")
+    public ResponseEntity<DownloadToolsVO> downloadTools(@RequestBody DownloadToolsDTO dto) {
+        return toolsService.getDownloadInformation(dto);
     }
 }

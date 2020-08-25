@@ -133,7 +133,7 @@ export default {
       this.file = fileDOM.files[0];
     },
     async handleSubmit() {
-      let baseUrl = sessionStorage.getItem("baseUrl");
+      let baseUrl = this.baseUrl;
       let formData = new FormData();
       formData.append("file", this.file);
       formData.append("name", this.name);

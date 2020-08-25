@@ -16,19 +16,21 @@ import site.minnan.linkserver.entites.DTO.AddToolsDTO;
 import site.minnan.linkserver.entites.DTO.DeleteToolsDTO;
 import site.minnan.linkserver.entites.DTO.DownloadToolsDTO;
 import site.minnan.linkserver.entites.ResponseEntity;
+import site.minnan.linkserver.entites.VO.DownloadToolsVO;
 import site.minnan.linkserver.entites.VO.ToolsVO;
 import site.minnan.linkserver.mapper.ToolsMapper;
 import site.minnan.linkserver.service.ToolsService;
 import site.minnan.linkserver.utils.ResponseCode;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,27 +46,27 @@ public class ToolsServiceImpl implements ToolsService {
     @Value("${aliyun.bucketName}")
     private String bucketName;
 
+    @Value("${aliyun.baseUrl}")
+    private String baseUrl;
+
     @Override
     @Transactional
     public ResponseEntity<?> addTools(AddToolsDTO dto) throws IOException {
-        //构建阿里云oss键
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        String key = dto.getName() + sdf.format(new Date());
         MultipartFile file = dto.getFile();
         Tools tools = new Tools();
         //将文件信息存入数据库
         tools.setFileName(dto.getName());
-        tools.setOssKey(key);
         String[] fileExtensionArray = file.getOriginalFilename().split("\\.");
         String fileExtension = fileExtensionArray[fileExtensionArray.length - 1].toLowerCase();
         tools.setExtension(fileExtension);
         tools.setSize(file.getSize());
+        tools.setOssKey(String.format("%s.%s", dto.getName(), fileExtension));
         tools.setUpdateTime(Timestamp.from(Instant.now()));
         int i = toolsMapper.insert(tools);
         if (i > 0) {
             //将文件存入阿里云oss
             InputStream is = file.getInputStream();
-            oss.putObject(bucketName, key, is);
+            oss.putObject(bucketName, tools.getOssKey(), is);
             return new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "保存文件成功");
         }
         return new ResponseEntity<>(ResponseCode.CODE_FAIL, "保存文件失败");
@@ -106,50 +108,22 @@ public class ToolsServiceImpl implements ToolsService {
     }
 
     @Override
-    public ResponseEntity<?> downloadTools(DownloadToolsDTO dto, HttpServletResponse response) throws UnsupportedEncodingException {
+    public ResponseEntity<DownloadToolsVO> getDownloadInformation(DownloadToolsDTO dto) {
         QueryWrapper<Tools> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", dto.getId());
         Tools tools = toolsMapper.selectOne(queryWrapper);
         if (tools == null) {
             return new ResponseEntity<>(ResponseCode.CODE_FAIL, "工具不存在");
         }
-        OSSObject ossObject = oss.getObject(bucketName, tools.getOssKey());
-        String filename = URLEncoder.encode(tools.getFileName() + "." + tools.getExtension(), "UTF-8");
-        response.addHeader("Content-Disposition", "attachment;filename=" + filename);
-        response.setContentType("multiparty/form-data");
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            is = new BufferedInputStream(ossObject.getObjectContent());
-            os = new BufferedOutputStream(response.getOutputStream());
-            byte[] buffer = new byte[1024];
-            int len = 0;
-            while ((len = is.read(buffer)) != -1) {
-                os.write(buffer, 0, len);
-            }
-            os.flush();
-            os.close();
-            is.close();
-        } catch (IOException e) {
-            log.error("读取oss文件失败，{}", e.getMessage());
-            return new ResponseEntity<>(ResponseCode.CODE_FAIL, e.getMessage());
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(is != null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "下载成功");
+        DownloadToolsVO vo = new DownloadToolsVO();
+        String downloadUrl = String.format("%s/%s", baseUrl, tools.getOssKey());
+        String fileName = String.format("%s.%s", tools.getFileName(), tools.getExtension());
+        vo.setDownloadUrl(downloadUrl);
+        vo.setFileName(fileName);
+        ResponseEntity<DownloadToolsVO> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "获取链接成功");
+        responseEntity.setData(vo);
+        return responseEntity;
     }
+
 
 }

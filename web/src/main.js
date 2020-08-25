@@ -10,9 +10,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 import VueCookies from 'vue-cookies'
 
 import request from '@/utils/request.js'
+import config from '@/utils/config.js'
 
-sessionStorage.setItem("baseUrl", "http://localhost:8989")
-
+Vue.prototype.baseUrl = config.baseUrl
 
 Vue.config.productionTip = false
 Vue.prototype.request = request
