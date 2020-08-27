@@ -33,9 +33,13 @@
 
     <button
       type="button"
-      class="btn btn-primary btn-lg"
+      class="btn btn-primary"
       @click="openVlidateModal('addUserModal')"
-    >添加</button>
+      style="line-height:1.4"
+    >
+      <span class="iconfont icon-add" style="margin-right:5px"></span>
+      添加
+    </button>
 
     <!-- 检查管理员身份模态框 -->
     <div

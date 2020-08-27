@@ -33,11 +33,16 @@
       </div>
       <!-- /.container-fluid -->
     </nav>
+    <div style="margin-bottom:20px;display:flex;justify-content:space-between">
+      <h4>你好，{{userInfo.nickName}}</h4>
+      <a @click="logout"><h4><span class="iconfont icon-log-out"></span>退出登录</h4></a>
+    </div>
   </div>
 </template>
 
 <script>
 import $ from "jquery";
+import "@/assets/fonts/iconfont.css";
 
 export default {
   data() {
@@ -59,6 +64,9 @@ export default {
           url: "/introduction",
         },
       ],
+      userInfo: {
+        nickName: "",
+      },
     };
   },
   methods: {
@@ -73,29 +81,43 @@ export default {
       });
       this.$router.push(this.navList[i].url);
     },
+    logout(){
+      localStorage.removeItem("token")
+      this.$router.push("/login")
+    }
   },
   mounted() {
     if ($(window).width() < 768) {
       $("#navbar a").click(() => {
-          $("#navbar").collapse('hide')
+        $("#navbar").collapse("hide");
       });
       $(window).scroll(() => {
-          $("#navbar").collapse('hide')
-      })
+        $("#navbar").collapse("hide");
+      });
     }
 
     setTimeout(() => {
       //根据当前路径高亮导航
-      let currentPath = this.$route.path
-      console.log(currentPath)
+      let currentPath = this.$route.path;
+      console.log(currentPath);
       this.navList.forEach((item) => {
-        if(item.url == currentPath){
-          item.class = "active"
-        }else{
-          item.class = ""
+        if (item.url == currentPath) {
+          item.class = "active";
+        } else {
+          item.class = "";
         }
+      });
+    }, 100);
+
+    this.request
+      .post("/api/getUserInformation")
+      .then((response) => {
+        this.userInfo.nickName = response.data.nickName;
       })
-    }, 100)
+      .catch((error) => {
+        alert("获取用户信息异常");
+        console.log(error);
+      });
   },
 };
 </script>
@@ -103,5 +125,9 @@ export default {
 <style>
 a:hover {
   cursor: pointer;
+}
+
+.navbar {
+  margin-bottom: 0;
 }
 </style>

@@ -37,10 +37,13 @@
 
     <button
       type="button"
-      class="btn btn-primary btn-lg"
+      class="btn btn-primary"
       data-toggle="modal"
       data-target="#addFileModal"
-    >添加</button>
+      style="line-height:1.4"
+    >
+      <span class="iconfont icon-add" style="margin-right:5px"></span>添加
+    </button>
 
     <!-- 添加文件modal -->
     <div
@@ -177,7 +180,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    }
+    },
   },
   mounted() {
     this.getToolsList();

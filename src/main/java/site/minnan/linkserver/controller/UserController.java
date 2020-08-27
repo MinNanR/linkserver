@@ -11,9 +11,11 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import site.minnan.linkserver.entites.DO.UserInformation;
 import site.minnan.linkserver.entites.DTO.AddUserDTO;
 import site.minnan.linkserver.entites.DTO.DeleteUserDTO;
 import site.minnan.linkserver.entites.DTO.UpdateUserDTO;
@@ -64,6 +66,18 @@ public class UserController {
         ArrayList<Object> authoritiesStringList =
                 userDetails.getAuthorities().stream().collect(ArrayList::new, (list, au) -> list.add(au.getAuthority()), ArrayList::addAll);
         vo.setRedirectUrl(authoritiesStringList.contains("ADMIN") ? "/manager" : "/link");
+        responseEntity.setData(vo);
+        return responseEntity;
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping("api/getUserInformation")
+    public ResponseEntity<UserInformationVO> getUserInformation(UsernamePasswordAuthenticationToken authenticationToken){
+        JwtUser jwtUser = (JwtUser) authenticationToken.getPrincipal();
+        UserInformation user = userService.getUserByUsername(jwtUser.getUsername());
+        UserInformationVO vo = new UserInformationVO();
+        vo.setNickName(user.getNickName());
+        ResponseEntity<UserInformationVO> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "获取用户信息成功");
         responseEntity.setData(vo);
         return responseEntity;
     }

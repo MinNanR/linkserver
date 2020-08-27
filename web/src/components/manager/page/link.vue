@@ -34,10 +34,13 @@
     </div>
     <button
       type="button"
-      class="btn btn-primary btn-lg"
+      class="btn btn-primary"
       data-toggle="modal"
       data-target="#newLinkModal"
-    >添加</button>
+      style="line-height:1.4"
+    >
+      <span class="iconfont icon-add" style="margin-right:5px"></span>添加
+    </button>
 
     <!-- 添加节点模态框 -->
     <div
@@ -284,7 +287,6 @@ export default {
       this.handleModalClose();
     });
   },
-
 };
 </script>
 

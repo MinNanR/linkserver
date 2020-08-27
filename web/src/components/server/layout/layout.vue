@@ -10,7 +10,7 @@ import navigation from './nav'
 
 export default {
   components:{
-    navigation
+    navigation,
   }
 };
 </script>

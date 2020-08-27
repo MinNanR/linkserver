@@ -29,6 +29,9 @@
             <span class="hamb-middle"></span>
             <span class="hamb-bottom"></span>
           </button>
+          <div style="float:right;color:white;vertical-align:middle">
+            <h4>你好，{{userInfo.nickName}}</h4>
+          </div>
         </div>
         <div class="row">
           <router-view></router-view>
@@ -85,6 +88,16 @@ export default {
           class: "",
         },
       ],
+      userInfo: {
+        nickName: "",
+      },
+      infoClassExpand:{
+        "float":"right",
+        "margin-right":"220px"
+      },
+      infoClassCollpased:{
+        "float":"right",
+      }
     };
   },
   methods: {
@@ -105,6 +118,16 @@ export default {
     },
   },
   mounted() {
+    this.request
+      .post("/api/getUserInformation")
+      .then((response) => {
+        this.userInfo.nickName = response.data.nickName;
+      })
+      .catch((error) => {
+        alert("获取用户信息异常");
+        console.log(error);
+      });
+
     var trigger = $(".hamburger"),
       overlay = $(".overlay"),
       isClosed = true;
@@ -133,15 +156,15 @@ export default {
 
     setTimeout(() => {
       //根据当前路径高亮导航
-      let currentPath = this.$route.path
+      let currentPath = this.$route.path;
       this.navList.forEach((item) => {
-        if(item.url == currentPath){
-          item.class = "active"
-        }else{
-          item.class = ""
+        if (item.url == currentPath) {
+          item.class = "active";
+        } else {
+          item.class = "";
         }
-      })
-    }, 100)
+      });
+    }, 100);
   },
   beforeRouteEnter(to, from, next) {
     next();

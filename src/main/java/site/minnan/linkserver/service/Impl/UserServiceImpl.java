@@ -114,8 +114,8 @@ public class UserServiceImpl implements UserService {
         return new ResponseEntity<>(ResponseCode.CODE_FAIL, "数据库错误，删除失败");
     }
 
-
-    private UserInformation getUserByUsername(String username) {
+    @Override
+    public UserInformation getUserByUsername(String username) {
         UserInformation userInformation = (UserInformation) redisUtil.getValue("user::" + username);
         if (userInformation != null) {
             return userInformation;

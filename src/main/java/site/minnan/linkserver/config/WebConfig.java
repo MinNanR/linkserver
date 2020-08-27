@@ -3,15 +3,19 @@ package site.minnan.linkserver.config;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mobile.device.DeviceHandlerMethodArgumentResolver;
+import org.springframework.mobile.device.DeviceResolverHandlerInterceptor;
 import org.springframework.util.unit.DataSize;
 import org.springframework.util.unit.DataUnit;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.annotation.MultipartConfig;
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -45,6 +49,28 @@ public class WebConfig implements WebMvcConfigurer {
         factory.setMaxFileSize(DataSize.of(100, DataUnit.MEGABYTES));
         factory.setMaxRequestSize(DataSize.of(100, DataUnit.MEGABYTES));
         return factory.createMultipartConfig();
+    }
+
+    @Bean
+    public DeviceResolverHandlerInterceptor deviceResolverHandlerInterceptor(){
+        return new DeviceResolverHandlerInterceptor();
+    }
+
+    @Bean
+    public DeviceHandlerMethodArgumentResolver
+    deviceHandlerMethodArgumentResolver() {
+        return new DeviceHandlerMethodArgumentResolver();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(deviceResolverHandlerInterceptor());
+    }
+
+    @Override
+    public void addArgumentResolvers(
+            List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(deviceHandlerMethodArgumentResolver());
     }
 
 }
