@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import site.minnan.linkserver.annotation.OperateType;
 import site.minnan.linkserver.entites.DO.UserInformation;
 import site.minnan.linkserver.entites.DTO.AddUserDTO;
 import site.minnan.linkserver.entites.DTO.DeleteUserDTO;
@@ -47,6 +48,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @OperateType("登录")
     @PostMapping("${jwt.route.authentication.path}")
     public ResponseEntity<LoginVO> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         log.info(authenticationRequest.toString());
@@ -70,6 +72,7 @@ public class UserController {
         return responseEntity;
     }
 
+    @OperateType("查询")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping("api/getUserInformation")
     public ResponseEntity<UserInformationVO> getUserInformation(UsernamePasswordAuthenticationToken authenticationToken){
@@ -82,6 +85,7 @@ public class UserController {
         return responseEntity;
     }
 
+    @OperateType("查询")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/getUserList")
     public ResponseEntity<List<UserInformationVO>> getUserInformationList(){
@@ -91,6 +95,7 @@ public class UserController {
         return responseEntity;
     }
 
+    @OperateType("验证")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/validateUser")
     public ResponseEntity<?> validateUser(UsernamePasswordAuthenticationToken authentication, @RequestBody ValidateUserDTO dto){
@@ -100,18 +105,21 @@ public class UserController {
         return responseEntity;
     }
 
+    @OperateType("添加")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/addUser")
     public ResponseEntity<?> addUser(@RequestBody AddUserDTO dto){
         return userService.createUser(dto);
     }
 
+    @OperateType("更新")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/updateUser")
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserDTO dto){
         return userService.updateUser(dto);
     }
 
+    @OperateType("删除")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/deleteUser")
     public ResponseEntity<?> deleteUser(@RequestBody DeleteUserDTO dto){
