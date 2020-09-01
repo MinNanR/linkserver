@@ -35,6 +35,7 @@ public class LogServiceImpl implements LogService {
         if (dto.getOperation() != null) {
             queryWrapper.eq("operation", dto.getOperation());
         }
+        queryWrapper.orderByDesc("create_time");
         PageHelper.startPage(dto.getPageIndex(), dto.getPageSize());
         Page<Log> logList = (Page<Log>) logMapper.selectList(queryWrapper);
         LogListVO vo = new LogListVO();
