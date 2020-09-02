@@ -90,6 +90,20 @@ export default new Router({
                     }
                 }
             ]
+        },
+        {
+            path:"/unauthorized",
+            component: () => import("../components/unauthorized.vue"),
+            meta:{
+                title:'无权限'
+            }
+        },
+        {
+            path: "*",
+            component: () => import('../components/404.vue'),
+            meta:{
+                title:'404'
+            }
         }
     ]
 })

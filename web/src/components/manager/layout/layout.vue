@@ -12,25 +12,40 @@
             {{item.name}}
           </a>
         </li>
+        <li>
+          <a @click="headToIndex">
+            <i class="glyphicon glyphicon-globe" style="margin-right: 1rem"></i>
+            用户网站
+          </a>
+        </li>
       </ul>
     </nav>
     <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
-      <div class="container-fluid">
-        <div class="row" style="background-color:black;height:65px">
-          <button
-            type="button"
-            class="hamburger is-open animated fadeInLeft"
-            data-toggle="offcanvas"
-          >
-            <span class="hamb-top"></span>
-            <span class="hamb-middle"></span>
-            <span class="hamb-bottom"></span>
-          </button>
-          <div style="float:right;color:white;vertical-align:middle">
+      <div class="container-fluid" style="padding-left:0;padding-right:0">
+        <div
+          style="background-color:black;height:65px;display:flex;justify-content: space-between;"
+        >
+          <div>
+            <button
+              type="button"
+              class="hamburger is-open animated fadeInLeft"
+              data-toggle="offcanvas"
+            >
+              <span class="hamb-top"></span>
+              <span class="hamb-middle"></span>
+              <span class="hamb-bottom"></span>
+            </button>
+          </div>
+          <div style="float:right;color:white;display:flex;align-items:center">
             <h4>你好，{{userInfo.nickName}}</h4>
+            <a style="margin-left:10px;" @click="logout()">
+              <h4>
+                <span class="iconfont icon-log-out"></span>退出登录
+              </h4>
+            </a>
           </div>
         </div>
         <div class="row">
@@ -91,13 +106,13 @@ export default {
       userInfo: {
         nickName: "",
       },
-      infoClassExpand:{
-        "float":"right",
-        "margin-right":"220px"
+      infoClassExpand: {
+        float: "right",
+        "margin-right": "220px",
       },
-      infoClassCollpased:{
-        "float":"right",
-      }
+      infoClassCollpased: {
+        float: "right",
+      },
     };
   },
   methods: {
@@ -116,6 +131,14 @@ export default {
       this.currentPageIndex = i;
       this.$router.push(this.navList[i].url);
     },
+    logout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("whiteList");
+      this.$router.push("/login");
+    },
+    headToIndex(){
+      this.$router.push('/');
+    }
   },
   mounted() {
     this.request

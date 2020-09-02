@@ -35,7 +35,7 @@
     </nav>
     <div style="margin-bottom:20px;display:flex;justify-content:space-between">
       <h4>你好，{{userInfo.nickName}}</h4>
-      <a @click="logout"><h4><span class="iconfont icon-log-out"></span>退出登录</h4></a>
+      <a @click="logout()"><h4><span class="iconfont icon-log-out"></span>退出登录</h4></a>
     </div>
   </div>
 </template>
@@ -83,6 +83,7 @@ export default {
     },
     logout(){
       localStorage.removeItem("token")
+      localStorage.removeItem("whiteList")
       this.$router.push("/login")
     }
   },

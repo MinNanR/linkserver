@@ -67,8 +67,8 @@ export default {
     };
   },
   methods: {
-    getlogList() {
-      this.request.post("manager/getLogList", this.form).then((response) => {
+    getLogList() {
+      this.request.post("manager/getLogList", {pageSize:10,pageIndex:1}).then((response) => {
         this.logList = response.data.list;
         this.totalCount = response.data.totalCount;
         this.pageList = [];
@@ -96,7 +96,7 @@ export default {
     },
   },
   mounted() {
-    this.getlogList();
+    this.getLogList();
   },
 };
 </script>
