@@ -35,14 +35,14 @@ export default {
     };
   },
   methods: {
-    getlogList() {
+    getLogList() {
       this.request.post("manager/getLogList", {pageSize:10,pageIndex:1}).then((response) => {
         this.logList = response.data.list;
       });
     },
   },
   mounted() {
-    this.getlogList();
+    this.getLogList();
   },
 };
 </script>

@@ -33,6 +33,7 @@
 </template>
 
 <script>
+
 export default {
     data(){
       return{
@@ -47,12 +48,15 @@ export default {
         this.request.post('/login', this.loginForm)
         .then(response=> {
           let data = response.data
+          let whiteList = data.router
           let token = data.jwtToken
+          localStorage.setItem('whiteList', whiteList)
           localStorage.setItem('token', `Bearer ${token}`)
           this.$router.push(data.redirectUrl)
         })
         .catch(error => {
           console.log(error)
+          alert("登录失败!")
         })
       }
     }

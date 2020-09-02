@@ -90,7 +90,7 @@
       tabindex="-1"
       role="dialog"
       aria-labelledby="mySmallModalLabel"
-      id="deletLinkModal"
+      id="deleteLinkModal"
     >
       <div class="modal-dialog modal-sm" role="document">
         <div class="modal-dialog">
@@ -130,19 +130,19 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title" id="exampleModalLabel">修改节点</h4>
+            <h4 class="modal-title" id="updateModalLabel">修改节点</h4>
           </div>
           <div class="modal-body">
             <form>
               <div class="form-group">
-                <label for="name" class="control-label">节点名称:</label>
-                <input type="text" class="form-control" id="name" v-model="linkToUpdate.name" />
+                <label for="name2" class="control-label">节点名称:</label>
+                <input type="text" class="form-control" id="name2" v-model="linkToUpdate.name" />
               </div>
               <div class="form-group">
-                <label for="link" class="control-label">链接:</label>
+                <label for="link2" class="control-label">链接:</label>
                 <textarea
                   class="form-control"
-                  id="link"
+                  id="link2"
                   style="resize:none;height:100px"
                   v-model="linkToUpdate.link"
                 ></textarea>
@@ -232,14 +232,14 @@ export default {
     },
     openDeleteModal(index) {
       this.linkToDeleteIndex = index;
-      $("#deletLinkModal").modal("show");
+      $("#deleteLinkModal").modal("show");
     },
     handleDeleteConfirm() {
       let id = this.linkList[this.linkToDeleteIndex].id;
       this.request
         .post("/manager/deleteLink", { id: id })
         .then((response) => {
-          $("#deletLinkModal").modal("hide");
+          $("#deleteLinkModal").modal("hide");
           alert(response.message);
           this.getLinkList();
         })

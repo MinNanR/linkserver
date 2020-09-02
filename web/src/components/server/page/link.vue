@@ -17,9 +17,7 @@
           >
             <span style="line-height: 2">
               <span style="font-weight: bold">{{item.name}}</span>
-              <span
-                style="float:right;font-size: 0.5rem"
-              >{{item.updateTime}}</span>
+              <span style="float:right;font-size: 0.5rem">{{item.updateTime}}</span>
             </span>
           </a>
         </h4>
@@ -31,7 +29,7 @@
         :id="`collapse${item.id}`"
       >
         <div class="panel-body">
-          <div class="link-div" style="font-size: 1.5rem">{{item.link}}</div>
+          <div class="link-div" style="font-size: 1.5rem" v-if="'link' in item">{{item.link}}</div>
         </div>
       </div>
     </div>
@@ -50,7 +48,7 @@ export default {
       this.request.post("/api/getAllLinkList").then((response) => {
         this.linkList = response.data;
       });
-    },
+    }
   },
   mounted() {
     this.getLinkList();

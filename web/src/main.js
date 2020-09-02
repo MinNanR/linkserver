@@ -17,20 +17,22 @@ Vue.prototype.baseUrl = config.baseUrl
 Vue.config.productionTip = false
 Vue.prototype.request = request
 
-
-
 Vue.use(VueCookies)
 
 router.beforeEach((to, from, next) => {
-  if (to.path != '/login') {
+  if (to.path == '/unauthorized' || to.path == '/login') {
+    next()
+  } else {
     const token = localStorage.getItem("token")
+    let whiteList = localStorage.getItem("whiteList")
+    whiteList = whiteList == null ? [] : whiteList
     if (token == null) {
       next('/login')
-    } else {
+    } else if (whiteList.indexOf(to.path) != -1) {
       next()
+    } else {
+      next('/unauthorized')
     }
-  } else {
-    next()
   }
   document.title = `${to.meta.title}`
 
