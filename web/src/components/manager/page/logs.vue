@@ -79,7 +79,7 @@ export default {
     },
     switchPage(targetPageIndex) {
       this.form.pageIndex = targetPageIndex;
-      this.getlogList()
+      this.getLogList()
     },
     previousPage() {
       if (this.form.pageIndex == 1) {

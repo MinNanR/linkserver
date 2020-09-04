@@ -34,15 +34,6 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# TODO将阿里云配置移至redis缓存
-aliyun:
-  endpoint: oss-cn-shenzhen.aliyuncs.com
-  accessKeyId: LTAI4G8ayrXQHYJt2PxFsJLg
-  accessKeySecret: eJUhpui1iVSOPxu5WHek2LbNEodncR
-  bucketName: link-server
-  urlPrefix: link-server.oss-cn-shenzhen.aliyuncs.com
-  baseUrl: http://minnan.site:2000
-
 pagehelper:
   reasonable: false
   support-methods-arguments: true

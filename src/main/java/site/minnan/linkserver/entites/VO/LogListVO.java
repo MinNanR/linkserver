@@ -25,7 +25,7 @@ public class LogListVO {
 
     private List<LogVO> list;
 
-    private Integer totalCount;
+    private Long totalCount;
 
 
 }

@@ -48,7 +48,7 @@ public class LogServiceImpl implements LogService {
             logVO.setCreateTime(log.getCreateTime());
             return logVO;
         }).collect(Collectors.toList()));
-        vo.setTotalCount((int) logList.getTotal());
+        vo.setTotalCount(logList.getTotal());
         ResponseEntity<LogListVO> responseEntity = new ResponseEntity<>();
         responseEntity.setData(vo);
         responseEntity.setCode(ResponseCode.CODE_SUCCESS);
