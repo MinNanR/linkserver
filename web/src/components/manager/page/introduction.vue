@@ -19,13 +19,38 @@
       <button class="btn btn-primary" style="margin-bottom:10px" @click="switchEditing()">编辑</button>
       <div v-html="introduction"></div>
     </div>
+    <form action="">
+      <input type="file" ref="upload" style="display:none" @input="selectFile()">
+    </form>
+    
   </div>
 </template>
 
 <script>
 import { quillEditor } from "vue-quill-editor";
 import "quill/dist/quill.snow.css";
+import axios from "axios";
 // import * as Quill from 'quill'
+
+const toolbarOptions = [
+  ["bold", "italic", "underline", "strike"], // toggled buttons
+  ["blockquote", "code-block"],
+
+  [{ header: 1 }, { header: 2 }], // custom button values
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ script: "sub" }, { script: "super" }], // superscript/subscript
+  [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+  [{ direction: "rtl" }], // text direction
+
+  [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  [{ font: [] }],
+  [{ align: [] }],
+  ["link", "image", "video"],
+  ["clean"], // remove formatting button
+];
 
 export default {
   components: {
@@ -38,7 +63,16 @@ export default {
       editorOption: {
         theme: "snow",
         placehoder: "请输入正文",
+        modules: {
+          toolbar: {
+            container: toolbarOptions,
+            handlers: {
+              image: this.uplaodImage
+            },
+          },
+        },
       },
+      file: null,
       isEditing: false,
       introduction: "",
     };
@@ -70,6 +104,34 @@ export default {
       this.isEditing = !this.isEditing;
       this.content = this.introduction;
     },
+    uplaodImage(value){
+      if(value){
+        let uploadInput = this.$refs.upload
+        uploadInput.click()
+      }
+    },
+    async selectFile(){
+      let baseUrl = this.baseUrl;
+      let formData = new FormData();
+      let image = this.$refs.upload.files[0]
+      formData.append("image", image);
+      await axios({
+        url: `${baseUrl}/manager/addImage`,
+        data: formData,
+        method: "post",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: localStorage.getItem("token"),
+        },
+      })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.formData = null;
+    }
   },
   mounted() {
     this.editor = this.$refs.editor.quill;

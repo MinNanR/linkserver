@@ -23,7 +23,7 @@ public class ToolsController {
     @Autowired
     private ToolsService toolsService;
 
-    @OperateType("添加啊")
+    @OperateType("添加")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/addTools")
     public ResponseEntity<?> addTools(AddToolsDTO dto) throws IOException {
