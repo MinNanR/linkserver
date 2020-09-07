@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class AddImageDTO implements Serializable {
+public class AddImageDTO implements Serializable,FileDTO {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,9 +18,7 @@ public class AddImageDTO implements Serializable {
     private MultipartFile image;
 
     @Override
-    public String toString() {
-        return "AddImageDTO{" +
-                "image=" + image.toString() +
-                '}';
+    public MultipartFile getMultipartFile() {
+        return image;
     }
 }

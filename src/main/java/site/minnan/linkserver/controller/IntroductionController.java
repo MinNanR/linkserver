@@ -23,14 +23,6 @@ public class IntroductionController {
     @Autowired
     private IntroductionService introductionService;
 
-    @OperateType("添加")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @PostMapping("manager/addImage")
-    public ResponseEntity<String> insertImage(AddImageDTO dto) throws IOException {
-        return introductionService.addImage(dto);
-    }
-
-
     @OperateType("更新")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/updateIntroduction")
