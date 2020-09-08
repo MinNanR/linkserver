@@ -1,38 +1,29 @@
 package site.minnan.linkserver.aop;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import site.minnan.linkserver.annotation.OperateType;
 import site.minnan.linkserver.entites.DTO.FileDTO;
 import site.minnan.linkserver.entites.Log;
-import site.minnan.linkserver.entites.ResponseEntity;
-import site.minnan.linkserver.entites.VO.LoginVO;
 import site.minnan.linkserver.entites.jwt.JwtUser;
-import site.minnan.linkserver.mapper.LogMapper;
 import site.minnan.linkserver.service.LogService;
 import site.minnan.linkserver.utils.JwtUtil;
 import site.minnan.linkserver.utils.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Aspect
@@ -157,5 +148,6 @@ public class LogAop {
         logService.addLog(logEntity);
         return retValue;
     }
+
 
 }

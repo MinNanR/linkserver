@@ -9,9 +9,9 @@ import java.io.IOException;
 
 public interface IntroductionService {
 
-    ResponseEntity<String> addImage(AddImageDTO dto) throws IOException;
-
     ResponseEntity<?> updateIntroduction(UpdateIntroductionDTO dto);
 
     IntroductionVO getIntroduction();
+
+    ResponseEntity<String> addImage(AddImageDTO dto) throws IOException;
 }

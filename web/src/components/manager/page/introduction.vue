@@ -19,10 +19,9 @@
       <button class="btn btn-primary" style="margin-bottom:10px" @click="switchEditing()">编辑</button>
       <div v-html="introduction"></div>
     </div>
-    <form action="">
-      <input type="file" ref="upload" style="display:none" @input="selectFile()">
+    <form>
+      <input type="file" ref="upload" style="display:none" @input="selectFile()" />
     </form>
-    
   </div>
 </template>
 
@@ -67,7 +66,7 @@ export default {
           toolbar: {
             container: toolbarOptions,
             handlers: {
-              image: this.uplaodImage
+              image: this.uplaodImage,
             },
           },
         },
@@ -104,16 +103,16 @@ export default {
       this.isEditing = !this.isEditing;
       this.content = this.introduction;
     },
-    uplaodImage(value){
-      if(value){
+    uplaodImage(value) {
+      if (value) {
         let uploadInput = this.$refs.upload
         uploadInput.click()
       }
     },
-    async selectFile(){
+    async selectFile() {
       let baseUrl = this.baseUrl;
       let formData = new FormData();
-      let image = this.$refs.upload.files[0]
+      let image = this.$refs.upload.files[0];
       formData.append("image", image);
       await axios({
         url: `${baseUrl}/manager/addImage`,
@@ -125,13 +124,17 @@ export default {
         },
       })
         .then((response) => {
-          console.log(response);
+          let url = response.data.data;
+          let editor = this.$refs.editor.quill;
+          let index = editor.selection.savedRange.index;
+          editor.insertEmbed(index, "image", url);
+          editor.setSelection(index + 1);
         })
         .catch((error) => {
           console.log(error);
         });
       this.formData = null;
-    }
+    },
   },
   mounted() {
     this.editor = this.$refs.editor.quill;

@@ -17,22 +17,22 @@ import java.io.IOException;
 public class FileController {
 
     @Autowired
-    private IntroductionService introductionService;
-
-    @Autowired
     private ToolsService toolsService;
 
-    @OperateType("文件上传")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @PostMapping("manager/addTools")
-    public ResponseEntity<?> addTools(AddToolsDTO dto) throws IOException {
-        return toolsService.addTools(dto);
-    }
+    @Autowired
+    private IntroductionService introductionService;
 
-    @OperateType("文件上传")
+    @OperateType("添加")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/addImage")
     public ResponseEntity<String> insertImage(AddImageDTO dto) throws IOException {
         return introductionService.addImage(dto);
+    }
+
+    @OperateType("添加")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/addTools")
+    public ResponseEntity<?> addTools(AddToolsDTO dto) throws IOException {
+        return toolsService.addTools(dto);
     }
 }
