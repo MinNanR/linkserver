@@ -39,7 +39,7 @@ public class IntroductionServiceImpl implements IntroductionService {
         String originalFilename = image.getOriginalFilename();
         String[] fileExtensionArray = originalFilename.split("\\.");
         String fileExtension = fileExtensionArray[fileExtensionArray.length - 1].toLowerCase();
-        String uuidString = UUID.randomUUID().toString().replaceAll("-", "'");
+        String uuidString = UUID.randomUUID().toString().replaceAll("-", "");
         String ossKey = String.format("%s.%s", uuidString, fileExtension);
         InputStream is = image.getInputStream();
         oss.putObject(bucketName, ossKey, is);

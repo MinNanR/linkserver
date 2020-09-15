@@ -61,7 +61,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         } else {
-            logger.warn("JWT Token does not begin with bearer String");
+            if (!"OPTIONS".equals(httpServletRequest.getMethod())) {
+                logger.warn("JWT Token does not begin with bearer String");
+            }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
 
