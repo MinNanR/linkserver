@@ -19,9 +19,56 @@
       <button class="btn btn-primary" style="margin-bottom:10px" @click="switchEditing()">编辑</button>
       <div v-html="introduction"></div>
     </div>
-    <form>
-      <input type="file" ref="upload" style="display:none" @input="selectFile()" />
-    </form>
+
+    <div
+      class="modal fade"
+      id="imageModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+      data-backdrop="static"
+    >
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="imageModalLabel">选择图片</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="file">图片</label>
+                <input type="file" id="file" ref="upload" @change="uploadImage()" />
+                <p class="help-block">请选择要添加的图片</p>
+              </div>
+            </form>
+            <div class="container-fliud">
+              <div
+                v-for="(item,index) in imageList"
+                :key="index"
+                class="col-md-4"
+                style="width:200px;height:250px;margin-top:30px"
+              >
+                <div style="height:200px;">
+                  <img style="width:100%;hegith:auto" :src="item.url" class="img-thumbnail" />
+                </div>
+                <div style="width:100%;text-align:center">
+                  <button class="btn btn-primary" style="width:30%;" @click="selectImage(index)">选择</button>
+                  <button
+                    class="btn btn-danger"
+                    style="width:30%;margin-left:20px;"
+                    @click="deleteImage(item.id)"
+                  >删除</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -29,6 +76,7 @@
 import { quillEditor } from "vue-quill-editor";
 import "quill/dist/quill.snow.css";
 import axios from "axios";
+import $ from "jquery";
 // import * as Quill from 'quill'
 
 const toolbarOptions = [
@@ -66,7 +114,7 @@ export default {
           toolbar: {
             container: toolbarOptions,
             handlers: {
-              image: this.uplaodImage,
+              image: this.openSelectImageModal,
             },
           },
         },
@@ -74,6 +122,7 @@ export default {
       file: null,
       isEditing: false,
       introduction: "",
+      imageList: [],
     };
   },
   methods: {
@@ -103,16 +152,18 @@ export default {
       this.isEditing = !this.isEditing;
       this.content = this.introduction;
     },
-    uplaodImage(value) {
+    openSelectImageModal(value) {
       if (value) {
-        let uploadInput = this.$refs.upload
-        uploadInput.click()
+        // let uploadInput = this.$refs.upload;
+        // uploadInput.click();
+        $("#imageModal").modal("show");
       }
     },
-    async selectFile() {
+    async uploadImage() {
       let baseUrl = this.baseUrl;
       let formData = new FormData();
       let image = this.$refs.upload.files[0];
+      console.log(baseUrl);
       formData.append("image", image);
       await axios({
         url: `${baseUrl}/manager/addImage`,
@@ -123,22 +174,46 @@ export default {
           authorization: localStorage.getItem("token"),
         },
       })
-        .then((response) => {
-          let url = response.data.data;
-          let editor = this.$refs.editor.quill;
-          let index = editor.selection.savedRange.index;
-          editor.insertEmbed(index, "image", url);
-          editor.setSelection(index + 1);
+        .then(() => {
+          this.getImageList();
         })
         .catch((error) => {
           console.log(error);
         });
       this.formData = null;
     },
+    getImageList() {
+      this.request
+        .post("/manager/getImageList")
+        .then((response) => {
+          this.imageList = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    selectImage(index) {
+      let editor = this.$refs.editor.quill;
+      let quillIndex = editor.selection.savedRange.index;
+      editor.insertEmbed(quillIndex, "image", this.imageList[index].url);
+      editor.setSelection(quillIndex + 1);
+      $("#imageModal").modal("hide");
+    },
+    deleteImage(id) {
+      this.request
+        .post("/manager/deleteImage", {id: id})
+        .then(() => {
+          this.getImageList();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   mounted() {
     this.editor = this.$refs.editor.quill;
     this.getIntroduction();
+    this.getImageList();
   },
 };
 </script>

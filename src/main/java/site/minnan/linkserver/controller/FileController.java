@@ -25,7 +25,7 @@ public class FileController {
     @OperateType("添加")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/addImage")
-    public ResponseEntity<String> insertImage(AddImageDTO dto) throws IOException {
+    public ResponseEntity<?> insertImage(AddImageDTO dto) throws IOException {
         return introductionService.addImage(dto);
     }
 

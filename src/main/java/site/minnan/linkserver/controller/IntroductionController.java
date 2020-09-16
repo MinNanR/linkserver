@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.minnan.linkserver.annotation.OperateType;
-import site.minnan.linkserver.entites.DTO.AddImageDTO;
+import site.minnan.linkserver.entites.DO.Image;
+import site.minnan.linkserver.entites.DTO.DeleteImageDTO;
 import site.minnan.linkserver.entites.DTO.UpdateIntroductionDTO;
 import site.minnan.linkserver.entites.ResponseEntity;
 import site.minnan.linkserver.entites.VO.IntroductionVO;
@@ -15,7 +15,7 @@ import site.minnan.linkserver.service.IntroductionService;
 import site.minnan.linkserver.utils.ResponseCode;
 
 import javax.validation.Valid;
-import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class IntroductionController {
@@ -38,5 +38,22 @@ public class IntroductionController {
         ResponseEntity<IntroductionVO> response = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "获取成功");
         response.setData(vo);
         return response;
+    }
+
+    @OperateType("查询")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/getImageList")
+    public ResponseEntity<List<Image>> getImageList(){
+        List<Image> imageList = introductionService.getImageList();
+        ResponseEntity<List<Image>> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "获取成功");
+        responseEntity.setData(imageList);
+        return responseEntity;
+    }
+
+    @OperateType("删除")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("manager/deleteImage")
+    public ResponseEntity<?> deleteImage(@RequestBody @Valid DeleteImageDTO dto){
+        return introductionService.deleteImage(dto);
     }
 }
