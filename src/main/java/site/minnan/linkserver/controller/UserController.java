@@ -8,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,11 +53,13 @@ public class UserController {
 
     @OperateType("登录")
     @PostMapping("${jwt.route.authentication.path}")
-    public ResponseEntity<LoginVO> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, Device device) throws Exception {
+    public ResponseEntity<LoginVO> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest,
+                                                             Device device) throws Exception {
         log.info(authenticationRequest.toString());
         try {
-            manager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
-                    authenticationRequest.getPassword()));
+            Authentication authentication = manager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
+                            authenticationRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (DisabledException e) {
             throw new Exception("用户被禁用", e);
         } catch (BadCredentialsException e) {
@@ -69,7 +73,8 @@ public class UserController {
         vo.setJwtToken(token);
         //获取登录身份
         ArrayList<String> authoritiesStringList =
-                userDetails.getAuthorities().stream().collect(ArrayList::new, (list, au) -> list.add(au.getAuthority()), ArrayList::addAll);
+                userDetails.getAuthorities().stream().collect(ArrayList::new,
+                        (list, au) -> list.add(au.getAuthority()), ArrayList::addAll);
         String role = authoritiesStringList.get(0);
         //交付路由
         List<String> router = (List<String>) redisUtil.getValue(String.format("router::%s", role));
@@ -88,7 +93,6 @@ public class UserController {
         return responseEntity;
     }
 
-    @OperateType("查询")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping("api/getUserInformation")
     public ResponseEntity<UserInformationVO> getUserInformation(UsernamePasswordAuthenticationToken authenticationToken) {
@@ -101,12 +105,12 @@ public class UserController {
         return responseEntity;
     }
 
-    @OperateType("查询")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/getUserList")
     public ResponseEntity<List<UserInformationVO>> getUserInformationList() {
         List<UserInformationVO> userInformationList = userService.getUserInformationList();
-        ResponseEntity<List<UserInformationVO>> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "获取成功");
+        ResponseEntity<List<UserInformationVO>> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS,
+                "获取成功");
         responseEntity.setData(userInformationList);
         return responseEntity;
     }
@@ -114,7 +118,8 @@ public class UserController {
     @OperateType("验证")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/validateUser")
-    public ResponseEntity<?> validateUser(UsernamePasswordAuthenticationToken authentication, @RequestBody ValidateUserDTO dto) {
+    public ResponseEntity<?> validateUser(UsernamePasswordAuthenticationToken authentication,
+                                          @RequestBody ValidateUserDTO dto) {
         dto.setJwtUser((JwtUser) authentication.getPrincipal());
         ResponseEntity<Boolean> responseEntity = new ResponseEntity<>(ResponseCode.CODE_SUCCESS, "");
         responseEntity.setData(userService.validateUser(dto));

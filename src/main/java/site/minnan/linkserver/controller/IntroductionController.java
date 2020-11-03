@@ -30,7 +30,6 @@ public class IntroductionController {
         return introductionService.updateIntroduction(dto);
     }
 
-    @OperateType("查询")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping("api/getIntroduction")
     public ResponseEntity<IntroductionVO> getIntroduction() {
@@ -40,7 +39,6 @@ public class IntroductionController {
         return response;
     }
 
-    @OperateType("查询")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/getImageList")
     public ResponseEntity<List<Image>> getImageList(){

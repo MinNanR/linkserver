@@ -22,7 +22,7 @@ public class LogController {
     @Autowired
     private LogService logService;
 
-    @OperateType("查询")
+
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("manager/getLogList")
     public ResponseEntity<LogListVO> getLogList(@RequestBody GetLogListDTO dto){

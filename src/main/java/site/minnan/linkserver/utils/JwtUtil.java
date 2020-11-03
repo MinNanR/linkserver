@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static io.jsonwebtoken.Claims.SUBJECT;
-
 @Component
 public class JwtUtil {
 

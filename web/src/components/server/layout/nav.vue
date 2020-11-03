@@ -87,7 +87,7 @@ export default {
       this.$router.push("/login")
     }
   },
-  mounted() {
+  async mounted() {
     if ($(window).width() < 768) {
       $("#navbar a").click(() => {
         $("#navbar").collapse("hide");
@@ -109,14 +109,13 @@ export default {
         }
       });
     }, 100);
-
-    this.request
+    console.log("getUserInfo")
+    await this.request
       .post("/api/getUserInformation")
       .then((response) => {
         this.userInfo.nickName = response.data.nickName;
       })
       .catch((error) => {
-        alert("获取用户信息异常");
         console.log(error);
       });
   },

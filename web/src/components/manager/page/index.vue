@@ -9,7 +9,7 @@ export default {};
 </script>
 
 <style>
-.jumbotron{
-    background-color: #ffffff;
+.jumbotron {
+  background-color: #ffffff;
 }
 </style>

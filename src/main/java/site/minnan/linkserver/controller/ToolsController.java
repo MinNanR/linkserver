@@ -22,7 +22,7 @@ public class ToolsController {
     @Autowired
     private ToolsService toolsService;
 
-    @OperateType("查询")
+
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @PostMapping("api/getToolsList")
     public ResponseEntity<List<ToolsVO>> getToolsList() {

@@ -26,7 +26,6 @@ public class UserInformation {
     @TableField(value = "nick_name")
     private String nickName;
 
-
     private String role;
 }
 

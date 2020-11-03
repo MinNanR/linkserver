@@ -22,7 +22,6 @@ public class LinkController {
     @Autowired
     LinkService linkService;
 
-    @OperateType("查询")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     @PostMapping("api/getAllLinkList")
     public ResponseEntity<List<LinkInformation>> getAllLinks() {

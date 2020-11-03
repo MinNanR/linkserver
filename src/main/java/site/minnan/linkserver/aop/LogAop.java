@@ -77,25 +77,27 @@ public class LogAop {
         //获取操作类型
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         OperateType operateType = methodSignature.getMethod().getAnnotation(OperateType.class);
-        String operation = operateType.value();
-        logEntity.setOperation(operation);
-        //
-        logEntity.setRequestUri(request.getRequestURI());
-        //获取操作者ip
-        String ip = WebUtil.getIpAddr(request);
-        //获取操作者
-        try {
-            JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            logEntity.setUserId(user.getId());
-            logEntity.setUsername(user.getUsername());
-        } catch (Exception e) {
-            logEntity.setUsername("匿名用户");
+        if (operateType != null) {
+            String operation = operateType.value();
+            logEntity.setOperation(operation);
+            //
+            logEntity.setRequestUri(request.getRequestURI());
+            //获取操作者ip
+            String ip = WebUtil.getIpAddr(request);
+            //获取操作者
+            try {
+                JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                logEntity.setUserId(user.getId());
+                logEntity.setUsername(user.getUsername());
+            } catch (Exception e) {
+                logEntity.setUsername("匿名用户");
+            }
+            logEntity.setRequestContent(argsString);
+            logEntity.setResponseContent(responseString);
+            logEntity.setIp(ip);
+            logEntity.setCostTime(time);
+            logService.addLog(logEntity);
         }
-        logEntity.setRequestContent(argsString);
-        logEntity.setResponseContent(responseString);
-        logEntity.setIp(ip);
-        logEntity.setCostTime(time);
-        logService.addLog(logEntity);
         return retValue;
     }
 
